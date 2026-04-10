@@ -29,6 +29,13 @@ export const MOCK_ASSETS: AssetRow[] = [
     status: 'active',
     notes: 'Spare',
   },
+  {
+    id: 'a-5',
+    name: 'Line, North plant',
+    region: 'UK',
+    status: 'idle',
+    notes: 'Comma in name breaks naive CSV',
+  },
 ]
 
 export function summarizeAssets(rows: AssetRow[]) {
