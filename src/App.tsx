@@ -6,6 +6,7 @@ import { AssetsTable } from './components/AssetsTable.tsx'
 import { Footer } from './components/Footer.tsx'
 import { Header } from './components/Header.tsx'
 import { StatsCards } from './components/StatsCards.tsx'
+import { delay, rowsToCsv } from './utils/csvExport.ts'
 
 function cloneRowsForState(): AssetRow[] {
   return MOCK_ASSETS.map((r) => ({ ...r }))
@@ -13,11 +14,10 @@ function cloneRowsForState(): AssetRow[] {
 
 export default function App() {
   const [filter, setFilter] = useState<'all' | 'active'>('all')
+  const [exportStatus, setExportStatus] = useState<string | null>(null)
 
-  // M3a: initializer runs every render (should use () => cloneRowsForState())
   const [assets] = useState(cloneRowsForState())
 
-  // M3b: title should update when filter changes — missing `filter` in deps
   useEffect(() => {
     document.title = `Ops — ${filter === 'all' ? 'All assets' : 'Active only'}`
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: stale document title when filter changes
@@ -25,6 +25,19 @@ export default function App() {
 
   const visible =
     filter === 'all' ? assets : assets.filter((a) => a.status === 'active')
+
+  const handleExport = async () => {
+    setExportStatus('Exported successfully')
+    const csv = rowsToCsv(visible)
+    await delay(30)
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'assets.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="app-shell">
@@ -42,6 +55,20 @@ export default function App() {
             <option value="all">All</option>
             <option value="active">Active only</option>
           </select>
+          <button
+            type="button"
+            className="toolbar-btn"
+            onClick={() => {
+              void handleExport()
+            }}
+          >
+            Export CSV
+          </button>
+          {exportStatus !== null ? (
+            <span className="toolbar-status" role="status">
+              {exportStatus}
+            </span>
+          ) : null}
         </div>
         <StatsCards rows={visible} />
         <AssetsTable rows={visible} />
