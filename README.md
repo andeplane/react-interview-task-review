@@ -21,6 +21,14 @@ npm run dev
 
 Allow roughly **45–60 minutes** for `main` plus **one or two** PRs, depending on the slot.
 
+## Feature branches (open as PRs into `main`)
+
+| Branch | Theme |
+|--------|--------|
+| `feature/table-helpers` | Sort / filter helpers and search field |
+| `feature/csv-export` | CSV export for visible rows |
+| `feature/poll-stats` | Polled KPI stats from mock JSON |
+
 ## Tech
 
 - [React 19](https://react.dev) + [TypeScript](https://www.typescriptlang.org/)
