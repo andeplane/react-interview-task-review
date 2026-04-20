@@ -6,6 +6,7 @@ import { AssetsTable } from './components/AssetsTable.tsx'
 import { Footer } from './components/Footer.tsx'
 import { Header } from './components/Header.tsx'
 import { StatsCards } from './components/StatsCards.tsx'
+import { usePollStats } from './hooks/usePollStats.ts'
 
 function cloneRowsForState(): AssetRow[] {
   return MOCK_ASSETS.map((r) => ({ ...r }))
@@ -26,6 +27,8 @@ export default function App() {
   const visible =
     filter === 'all' ? assets : assets.filter((a) => a.status === 'active')
 
+  const liveStats = usePollStats(filter)
+
   return (
     <div className="app-shell">
       <Header />
@@ -43,7 +46,7 @@ export default function App() {
             <option value="active">Active only</option>
           </select>
         </div>
-        <StatsCards rows={visible} />
+        <StatsCards rows={visible} liveStats={liveStats} />
         <AssetsTable rows={visible} />
       </main>
       <Footer />
